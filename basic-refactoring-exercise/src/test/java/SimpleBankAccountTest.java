@@ -1,6 +1,7 @@
 import example.model.AccountHolder;
 import example.model.BankAccount;
 import example.model.SimpleBankAccount;
+import example.model.SimpleBankAccountWithAtm;
 
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,11 +13,13 @@ class SimpleBankAccountTest {
 
     private AccountHolder accountHolder;
     private BankAccount bankAccount;
+    private BankAccount bankAccountATM;
 
     @BeforeEach
     void beforeEach(){
         accountHolder = new AccountHolder("Mario", "Rossi", 1);
         bankAccount = new SimpleBankAccount(accountHolder, 0);
+        bankAccountATM = new SimpleBankAccountWithAtm(accountHolder, 0, 1);
     }
 
     @Test
@@ -49,5 +52,38 @@ class SimpleBankAccountTest {
         bankAccount.deposit(accountHolder.getId(), 100);
         bankAccount.withdraw(2, 70);
         assertEquals(100, bankAccount.getBalance());
+    }
+
+
+    @Test
+    void testInitialBalanceATM() {
+        assertEquals(0, bankAccountATM.getBalance());
+    }
+
+    @Test
+    void testDepositATM() {
+        bankAccountATM.deposit(accountHolder.getId(), 100);
+        assertEquals(99, bankAccountATM.getBalance());
+    }
+
+    @Test
+    void testWrongDepositATM() {
+        bankAccountATM.deposit(accountHolder.getId(), 100);
+        bankAccountATM.deposit(2, 50);
+        assertEquals(99, bankAccountATM.getBalance());
+    }
+
+    @Test
+    void testWithdrawATM() {
+        bankAccountATM.deposit(accountHolder.getId(), 100);
+        bankAccountATM.withdraw(accountHolder.getId(), 70);
+        assertEquals(28, bankAccountATM.getBalance());
+    }
+
+    @Test
+    void testWrongWithdrawATM() {
+        bankAccountATM.deposit(accountHolder.getId(), 100);
+        bankAccountATM.withdraw(2, 70);
+        assertEquals(99, bankAccountATM.getBalance());
     }
 }
