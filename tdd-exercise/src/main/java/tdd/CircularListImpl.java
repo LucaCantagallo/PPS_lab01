@@ -26,25 +26,30 @@ public class CircularListImpl implements CircularList {
 
     @Override
     public boolean isEmpty() {
-        return list.isEmpty();
+        return this.list.isEmpty();
+    }
+
+    private Optional<Integer> getOptionalChecked(int index){
+        return this.isEmpty() ? Optional.empty() : Optional.of(list.get(index));
     }
 
     @Override
     public Optional<Integer> next() {
+
         if(index>=list.size()-1){
             this.index = 0;
-            return Optional.of(list.get(index));
+            return getOptionalChecked(index);
         }
-        return Optional.of(list.get(++index));
+        return getOptionalChecked(++index);
     }
 
     @Override
     public Optional<Integer> previous() {
         if(index<=0){
             this.index = list.size()-1;
-            return Optional.of(list.get(index));
+            return getOptionalChecked(index);
         }
-        return Optional.of(list.get(--index));
+        return getOptionalChecked(--index);
     }
 
     @Override
