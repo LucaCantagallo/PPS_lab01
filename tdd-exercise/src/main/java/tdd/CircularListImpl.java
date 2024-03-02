@@ -8,15 +8,20 @@ public class CircularListImpl implements CircularList {
 
     private List<Integer> list;
     private int index;
+    private boolean first;
 
     public CircularListImpl(){
         this.list = new ArrayList<>();
-        this.index = 0;
+        this.first=true;
+    }
+
+    private void onlyFirst(){
+        this.first = false;
     }
 
     @Override
     public void add(int element) {
-        list.add(element);
+        this.list.add(element);
     }
 
     @Override
@@ -30,30 +35,26 @@ public class CircularListImpl implements CircularList {
     }
 
     private Optional<Integer> getOptionalChecked(int index){
-        return this.isEmpty() ? Optional.empty() : Optional.of(list.get(index));
+        return this.isEmpty() ? Optional.empty() : Optional.of(list.get(this.index));
     }
 
     @Override
     public Optional<Integer> next() {
-
-        if(index>=list.size()-1){
-            this.index = 0;
-            return getOptionalChecked(index);
-        }
-        return getOptionalChecked(++index);
+        this.index = first ? -1 : this.index >= this.list.size()-1 ? -1 : this.index;
+        this.onlyFirst();
+        return getOptionalChecked(++this.index);
     }
 
     @Override
     public Optional<Integer> previous() {
-        if(index<=0){
-            this.index = list.size()-1;
-            return getOptionalChecked(index);
-        }
-        return getOptionalChecked(--index);
+        this.index = first ? this.list.size() : this.index <= 0 ? this.list.size() : this.index;
+        this.onlyFirst();
+        return getOptionalChecked(--this.index);
     }
 
     @Override
     public void reset() {
+        this.first=true;
         this.index=0;
     }
 

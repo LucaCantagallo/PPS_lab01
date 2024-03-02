@@ -1,20 +1,13 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
 import tdd.CircularList;
 import tdd.CircularListImpl;
-import tdd2.CircularList2;
-import tdd2.CircularList2Impl;
 
 /**
  * The test suite for testing the CircularList implementation
@@ -22,7 +15,6 @@ import tdd2.CircularList2Impl;
 public class CircularListTest {
 
     public CircularList circularList;
-    public CircularList2 circularList2;
 
     @Disabled
     @Test public void testTodo(){
@@ -32,16 +24,15 @@ public class CircularListTest {
     @BeforeEach
     void beforeEach(){
         circularList = new CircularListImpl();
-        circularList2 = new CircularList2Impl();
     }
 
     @Test
-    public void createCircularList(){
+    public void createEmpty(){
         assertTrue(circularList.isEmpty());
     }
 
     @Test
-    public void sizeEmptyList(){
+    public void sizeEmpty(){
         assertEquals(0, circularList.size());
     }
 
@@ -75,7 +66,7 @@ public class CircularListTest {
         for(int i = 0; i < 10; i++){
             circularList.add(i);
         }
-        assertEquals(Optional.of(1), circularList.next());
+        assertEquals(Optional.of(0), circularList.next());
     }
 
     @Test
@@ -84,7 +75,7 @@ public class CircularListTest {
             circularList.add(i);
         }
         circularList.next();
-        assertEquals(Optional.of(2), circularList.next());
+        assertEquals(Optional.of(1), circularList.next());
     }
 
     @Test
@@ -95,7 +86,7 @@ public class CircularListTest {
         for(int i = 0; i < 5; i++){
             circularList.next();
         }
-        assertEquals(Optional.of(6), circularList.next());
+        assertEquals(Optional.of(5), circularList.next());
     }
 
     @Test
@@ -107,7 +98,7 @@ public class CircularListTest {
     }
 
     @Test
-    public void fourthElement(){
+    public void mixedSteps(){
         for(int i = 0; i < 10; i++){
             circularList.add(i);
         }
@@ -115,11 +106,11 @@ public class CircularListTest {
             circularList.next();
         }
         circularList.previous();
-        assertEquals(Optional.of(3), circularList.previous());
+        assertEquals(Optional.of(2), circularList.previous());
     }
 
     @Test
-    public void circolarPreviousElement(){
+    public void startWithPrevious(){
         for(int i = 0; i < 10; i++){
             circularList.add(i);
         }
@@ -128,7 +119,7 @@ public class CircularListTest {
     }
 
     @Test
-    public void circolarNextElement(){
+    public void previousAndNext(){
         for(int i = 0; i < 10; i++){
             circularList.add(i);
         }
@@ -137,7 +128,7 @@ public class CircularListTest {
     }
 
     @Test
-    public void nextAndPrevElement(){
+    public void manySteps(){
         for(int i = 0; i < 10; i++){
             circularList.add(i);
         }
@@ -152,7 +143,7 @@ public class CircularListTest {
     }
 
     @Test
-    public void resetElement(){
+    public void reset(){
         for(int i = 0; i < 10; i++){
             circularList.add(i);
         }
@@ -164,105 +155,7 @@ public class CircularListTest {
         circularList.next();
         circularList.next();
         circularList.reset();
-        assertEquals(Optional.of(1), circularList.next());
+        assertEquals(Optional.of(0), circularList.next());
     }
-
-    //STEP 2:
-    @Test
-    public void addElementsAndSize(){
-        for(int i = 0; i < 10; i++){
-            circularList2.add(i);
-        }
-        assertEquals(10, circularList2.size());        
-    }
-
-    @Test
-    public void addAndIsEmpty(){
-        circularList2.add(1);
-        assertFalse(circularList2.isEmpty());        
-    }
-
-    @Test
-    public void forwardIterator(){
-        for(int i = 0; i < 10; i++){
-            circularList2.add(i);
-        }
-        assertEquals(Optional.of(0), circularList2.forwardIterator()); 
-    }
-
-    @Test
-    public void forwardIteratorSomeNexts(){
-        for(int i = 0; i < 10; i++){
-            circularList2.add(i);
-        }
-        circularList2.forwardIterator();
-        circularList2.forwardIterator();
-        assertEquals(Optional.of(2), circularList2.forwardIterator()); 
-    }
-
-
-    @Test
-    public void forwardIteratorCircle(){
-        for(int i = 0; i < 3; i++){
-            circularList2.add(i);
-        }
-        circularList2.forwardIterator();
-        circularList2.forwardIterator();
-        circularList2.forwardIterator();
-        circularList2.forwardIterator();
-        assertEquals(Optional.of(1), circularList2.forwardIterator()); 
-    }
-
-    @Test
-    public void backwardIteratorEmpty(){
-        assertEquals(Optional.empty(), circularList2.backwardIterator()); 
-    }
-
-    @Test
-    public void backwardIteratorNextAndPrev(){
-        for(int i = 0; i < 10; i++){
-            circularList2.add(i);
-        }
-        circularList2.forwardIterator(); //0
-        circularList2.forwardIterator();  //1
-        circularList2.forwardIterator(); //2
-        assertEquals(Optional.of(1), circularList2.backwardIterator()); 
-    }
-
-    @Test
-    public void forwardIterator(){
-        for(int i = 0; i < 10; i++){
-            circularList2.add(i);
-        }
-        assertEquals(Optional.of(8), circularList2.backwardIterator()); //interessante: perché il puntatore inizialmente sta sull'ultimo?
-    }
-
-    @Test
-    public void bothStepIterator(){
-        for(int i = 0; i < 10; i++){
-            circularList2.add(i);
-        }
-        circularList2.forwardIterator();//0
-        circularList2.forwardIterator();//1
-        circularList2.forwardIterator();//2
-        circularList2.backwardIterator();//1
-        circularList2.forwardIterator();//2
-        circularList2.forwardIterator();//3
-        circularList2.backwardIterator();//2
-        circularList2.forwardIterator();//3
-        assertEquals(Optional.of(2), circularList2.backwardIterator()); //2
-    }
-
-
-
-
-    
-
-
-    
-
-
-
-
 
 }
